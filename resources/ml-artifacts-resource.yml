@@ -1,0 +1,28 @@
+# Allow users to read the experiment 
+common_permissions: &permissions
+  permissions:
+    - level: CAN_READ
+      group_name: users
+
+# Allow users to execute models in Unity Catalog
+grants: &grants
+  grants:
+    - privileges:
+        - EXECUTE
+      principal: dne_databricks_executors
+
+# Defines model and experiments
+resources:
+  registered_models:
+      model:
+        name: ${var.model_name}
+        catalog_name: ${bundle.target}
+        schema_name: dne_databricks_ai
+        comment: Registered model in Unity Catalog for the "dne_databricks_ai" ML Project for ${bundle.target} deployment target.
+        <<: *grants
+
+  experiments:
+    experiment:
+      name: ${var.experiment_name}
+      <<: *permissions
+      description: MLflow Experiment used to track runs for dne_databricks_ai project.
